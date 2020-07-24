@@ -1,5 +1,4 @@
-# VMSS-RDP-Labs
-
+# VMSS-RDP-Lab
 
 This lab will deploy a basic VMSS with a new VNET, LB, and other required networking resources. 
 Users won't be able to RDP to the VMSS upon deployment. 
