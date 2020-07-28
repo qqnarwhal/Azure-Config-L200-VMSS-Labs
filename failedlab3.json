@@ -1,0 +1,168 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "virtualMachineScaleSetName": {
+            "type": "string",
+            "defaultValue": "failedLab1",
+            "metadata": {
+                "description": "String used as a base for naming resources. Must be 3-61 characters in length and globally unique across Azure. A hash is prepended to this string for some resources, and resource-specific information is appended."
+            },
+            "minLength": 3,
+            "maxLength": 61
+        },
+         "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Admin username on all VMs."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Admin password on all VMs."
+            }
+        }
+    },
+    "variables": {
+        "storageApiVersion": "2019-06-01",
+        "vhdContainerName": "[concat(variables('namingInfix'), 'vhd')]",
+        "storageAccountNamePrefix": "[toLower(concat(substring(uniqueString(resourceGroup().id), 0, 9), variables('namingInfix'), 'sa'))]",
+        "namingInfix": "[toLower(substring(concat(parameters('virtualMachineScaleSetName'), uniqueString(resourceGroup().id)), 0, 9))]",
+        "longNamingInfix": "[toLower(parameters('virtualMachineScaleSetName'))]",
+        "virtualNetworkName": "[concat(variables('namingInfix'), '-vnet')]",
+        "subnetName": "[concat(variables('namingInfix'), '-subnet')]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetPrefix": "10.0.0.0/24",
+        "nicName": "[concat(variables('namingInfix'), '-nic')]",
+        "ipConfigName": "[concat(variables('namingInfix'), '-ipconfig')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[concat(variables('storageAccountNamePrefix'), copyIndex())]",
+            "location": "[parameters('location')]",
+            "apiVersion": "[variables('storageApiVersion')]",
+            "kind": "Storage",
+            "sku": {
+                "name": "Premium_LRS"
+            },
+            "copy": {
+                "name": "storageLoop",
+                "count": 5
+            },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "location": "[parameters('location')]",
+            "apiVersion": "2016-03-30",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "name": "[parameters('virtualMachineScaleSetName')]",
+            "apiVersion": "2019-07-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '0'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '1'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '2'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '3'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '4'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "sku": {
+                "name": "Standard_A1",
+                "tier": "Standard",
+                "capacity": 3
+            },
+            "properties": {
+                "overprovision": "true",
+                "upgradePolicy": {
+                    "mode": "Manual"
+                },
+                "singlePlacementGroup": "true",
+                "virtualMachineProfile": {
+                    "storageProfile": {
+                        "osDisk": {
+                            "createOption": "fromImage",
+                            "caching": "ReadWrite",
+                            "name": "[concat(variables('namingInfix'), 'osdisk')]",
+                            "vhdContainers": [
+                                "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '0')), variables('storageApiVersion')).primaryEndpoints.blob, variables('vhdContainerName'))]",
+                                "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '1')), variables('storageApiVersion')).primaryEndpoints.blob, variables('vhdContainerName'))]",
+                                "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '2')), variables('storageApiVersion')).primaryEndpoints.blob, variables('vhdContainerName'))]",
+                                "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '3')), variables('storageApiVersion')).primaryEndpoints.blob, variables('vhdContainerName'))]",
+                                "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(variables('storageAccountNamePrefix'), '4')), variables('storageApiVersion')).primaryEndpoints.blob, variables('vhdContainerName'))]"
+                            ]
+                        },
+                        "imageReference": {
+                            "publisher": "MicrosoftWindowsServer",
+                            "offer": "WindowsServer",
+                            "sku": "2016-Datacenter",
+                            "version": "latest"
+                        }
+                    },
+                    "networkProfile": {
+                        "networkInterfaceConfigurations": [
+                            {
+                                "name": "[variables('nicName')]",
+                                "properties": {
+                                    "primary": true,
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('ipConfigName')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "osProfile": {
+                        "computerNamePrefix": "[variables('namingInfix')]",
+                        "adminUsername": "[parameters('adminUsername')]",
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "windowsConfiguration": {
+                            "provisionVmAgent": true
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[parameters('adminUsername')]"
+        }
+    }
+}
