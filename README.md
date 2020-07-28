@@ -8,4 +8,4 @@ Hint: There are 2 things that need to be fixed!
 
 Note: The "Region" parameter doesn't really do anything. Use the "location" parameter to set the location for your resources. 
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fqqnarwhal%2FAzure-Config-L200-VMSS-Labs%2Fmaster%2FrdpLab1.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fqqnarwhal%2FAzure-Config-L200-VMSS-Labs%2Fmaster%2FrdpLab1.json) (Right click to open in new tab)
