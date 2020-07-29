@@ -3,7 +3,7 @@
 ## Failed State Labs
 
 ### Lab1
-Review case <caseID> in ASC
+Browse to case <caseID> in ASC
 Investigate the cause for the below VMSS in failed state and provide potential solutions.
 
 Resource Group: L200FailedScenarios
@@ -11,7 +11,7 @@ Resource Group: L200FailedScenarios
 VMSS: failedLab1
 
 ### Lab2
-Review case <caseID> in ASC
+Browse to case <caseID> in ASC
 Investigate the cause for the below VMSS in failed state and provide potential solutions. 
 
 Resource Group: L200FailedScenarios
@@ -42,3 +42,15 @@ Hint: There are 2 things that need to be fixed!
 Note: The "Region" parameter doesn't really do anything. Use the "location" parameter to set the location for your resources. 
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fqqnarwhal%2FAzure-Config-L200-VMSS-Labs%2Fmaster%2FrdpLab1.json) (Right click to open in new tab)
+
+## Service Fabric
+Browse to case <caseID> in ASC
+
+There are several VMSS in the resource group "SFlab". 
+Please answer the below for each VMSS. 
+
+1. Is it part of a Service Fabric Cluster? If it is, please answer the following questions as well. 
+2. Which Service Fabric Cluster is it a part of?
+3. What is the durability level for this node type?
+4. Is MR enabled for this VMSS?
+
