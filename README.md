@@ -53,4 +53,5 @@ Please answer the below for each VMSS.
 2. Which Service Fabric Cluster is it a part of?
 3. What is the durability level for this node type?
 4. Is MR enabled for this VMSS?
+5. Is it a primary node type?
 
