@@ -1,4 +1,4 @@
-### Service Fabric VMSS Lab
+# Service Fabric VMSS Lab
 Please browse the the case provided in class in ASC.
 
 There are several VMSS in the resource group "SFlab". 
