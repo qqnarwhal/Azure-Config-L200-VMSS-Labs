@@ -2,7 +2,7 @@
 Please browse the the case provided in class in ASC.
 
 There are several VMSS in the resource group "SFlab". 
-Please answer the below for each VMSS. 
+Please answer the below for each VMSS, and email the answer to the instructor with subject "sfLab200"
 
 1. Is it part of a Service Fabric Cluster? If it is, please answer the following questions as well. 
 2. Which Service Fabric Cluster is it a part of?
