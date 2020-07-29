@@ -1,7 +1,7 @@
 # Lab - VMSS in Failed State
 
 ## Lab1
-Browse to case 120072921000122 in ASC
+Please browse the the case provided in class in ASC.
 Investigate the cause for the below VMSS in failed state and provide potential solutions.
 
 Resource Group: L200FailedScenarios
@@ -9,7 +9,7 @@ Resource Group: L200FailedScenarios
 VMSS: failedLab1
 
 ## Lab2
-Browse to case 120072921000122 in ASC
+Please browse the the case provided in class in ASC.
 Investigate the cause for the below VMSS in failed state and provide potential solutions. 
 
 Resource Group: L200FailedScenarios
