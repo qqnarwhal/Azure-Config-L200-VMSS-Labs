@@ -1,4 +1,4 @@
-#Lab - VMSS in Failed State
+# Lab - VMSS in Failed State
 
 ## Lab1
 Browse to case <caseID> in ASC
