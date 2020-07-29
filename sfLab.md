@@ -1,5 +1,5 @@
 # Service Fabric VMSS Lab
-Please browse the the case provided in class in ASC.
+Please browse to the the case provided in class in ASC.
 
 There are several VMSS in the resource group "SFlab". 
 Please answer the below for each VMSS, and email the answer to the instructor with subject "sfLab200"
